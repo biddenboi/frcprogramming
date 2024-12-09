@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -21,9 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  //1: remember we need to import a vendorlibrary to use these
-  private CANSparkMax sparkMax;
-  private RelativeEncoder sparkEncoder;
+  private TalonFX talonFX;  
 
 
   /**
@@ -32,11 +31,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    sparkMax = new CANSparkMax(Constants.kSparkMaxId, MotorType.kBrushless);
-    sparkEncoder = sparkMax.getEncoder();
-    
-    //sparkMax.set(1);
-  
+    talonFX = new Talon(Constants.kTalonFXId);
+
+    //TalonFXConfiguration config = new TalonFXConfiguration();
+    //sparkmax needs clas for encoder, talonfx needs class for configs
+
+    talonFX.feed().sensor
   }
 
   /**
