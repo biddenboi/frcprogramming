@@ -5,9 +5,11 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,7 +23,8 @@ public class Robot extends TimedRobot {
 
   //1: remember we need to import a vendorlibrary to use these
   private CANSparkMax sparkMax;
-  private TalonFX
+  private RelativeEncoder sparkEncoder;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -29,11 +32,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    //1: initializing SparkMax motor controller (RevMotors) remember can controls spark max controller power output to Power Wires to motor
-    sparkMax = new CANSparkMax(0, MotorType.kBrushless);
-
-    //1: Sets motor to full speed
-    sparkMax.set(1);
+    sparkMax = new CANSparkMax(Constants.kSparkMaxId, MotorType.kBrushless);
+    sparkEncoder = sparkMax.getEncoder();
+    
+    //sparkMax.set(1);
+  
   }
 
   /**
