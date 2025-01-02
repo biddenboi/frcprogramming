@@ -9,9 +9,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,10 +28,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  public CANSparkMax sparkMax;
+  private CANSparkMax sparkMax;
   private RelativeEncoder sparkEncoder;
+  private SparkPIDController sparkController;
 
+  private double setpoint;
 
+  private SimpleMotorFeedforward feedforward;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -36,7 +42,18 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     sparkMax = new CANSparkMax(Constants.kSparkMaxId, MotorType.kBrushless);
-    sparkEncoder = new sparkMax.getEncoder();
+    sparkEncoder = sparkMax.getEncoder();
+    sparkController = sparkMax.getPIDController();
+
+    sparkEncoder.setPosition(0.0);
+    sparkEncoder.setPositionConversionFactor(Constants.kPositionConversionFactor);
+    sparkEncoder.setVelocityConversionFactor(Constants.kVelocityConversionFactor);
+
+    sparkController.setP(Constants.kP);
+    sparkController.setI(Constants.kI);
+    sparkController.setD(Constants.kD);
+
+    feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
   }
 
   /**
@@ -47,7 +64,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    sparkMax.setVoltage(feedforward.calculate(setpoint) + ((setpoint / Constants.kVelocityConversionFactor) / Constants.kMaxNeoRPM) * Constants.kmaxVoltsNeo);
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -97,6 +116,6 @@ public class Robot extends TimedRobot {
   public void simulationInit() {}
 
   /** This function is called periodically whilst in simulation. */
-  @Override
+  @Override 
   public void simulationPeriodic() {}
 }
