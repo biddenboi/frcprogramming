@@ -65,7 +65,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    sparkMax.setVoltage(feedforward.calculate(setpoint) + ((setpoint / Constants.kVelocityConversionFactor) / Constants.kMaxNeoRPM) * Constants.kmaxVoltsNeo);
+    //sparkMax.setVoltage(feedforward.calculate(setpoint) + ((setpoint / Constants.kVelocityConversionFactor) / Constants.kMaxNeoRPM) * Constants.kmaxVoltsNeo);
+    sparkController.setReference(setpoint, ControlType.kVelocity, 0, 1.0)
+    //arb feedforward is some amount of volts the program starts with
   }
 
   /**
