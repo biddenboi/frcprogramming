@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -22,7 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends TimedRobot {
 
-  private TalonFX talonFX;  
+  public CANSparkMax sparkMax;
+  private RelativeEncoder sparkEncoder;
 
 
   /**
@@ -31,12 +35,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    talonFX = new Talon(Constants.kTalonFXId);
-
-    //TalonFXConfiguration config = new TalonFXConfiguration();
-    //sparkmax needs clas for encoder, talonfx needs class for configs
-
-    talonFX.feed().sensor
+    sparkMax = new CANSparkMax(Constants.kSparkMaxId, MotorType.kBrushless);
+    sparkEncoder = new sparkMax.getEncoder();
   }
 
   /**
